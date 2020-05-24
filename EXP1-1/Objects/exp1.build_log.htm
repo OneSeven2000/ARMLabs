@@ -26,19 +26,17 @@ Project File Date:  05/19/2020
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
-Rebuild Project 'exp1' - Target 'Target 1'
+Rebuild target 'Target 1'
 assembling startup_TM4C129.s...
 compiling exp1-1.c...
-D:\WorkSpace\ARMLabs\EXP1\exp1-1.c(32): warning:  #177-D: variable "delay_time"  was declared but never referenced
-  	uint32_t delay_time;
-D:\WorkSpace\ARMLabs\EXP1\exp1-1.c(41): warning:  #177-D: variable "delay_time"  was declared but never referenced
-  	uint32_t delay_time;
-exp1-1.c: 2 warnings, 0 errors
+exp1-1.c(53): warning:  #550-D: variable "freq"  was set but never used
+  	uint32_t freq;
+exp1-1.c: 1 warning, 0 errors
 compiling system_TM4C129.c...
 linking...
-Program Size: Code=1332 RO-data=544 RW-data=4 ZI-data=612  
+Program Size: Code=2084 RO-data=1140 RW-data=4 ZI-data=612  
 FromELF: creating hex file...
-".\Objects\exp1.axf" - 0 Error(s), 2 Warning(s).
+".\Objects\exp1.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -65,8 +63,8 @@ Package Vendor: Keil
 
    * Component: Keil::Device:Startup:1.0.0
       Include file:  Device\Include\TM4C129\TM4C129.h
-      Source file:   Device\Source\system_TM4C129.c
       Source file:   Device\Source\ARM\startup_TM4C129.s
+      Source file:   Device\Source\system_TM4C129.c
 Build Time Elapsed:  00:00:00
 </pre>
 </body>

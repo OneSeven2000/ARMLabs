@@ -8,11 +8,13 @@
 #include "sysctl.h"
 
 
+#define   FASTFLASHTIME			(uint32_t) 150000
+#define   SLOWFLASHTIME			(uint32_t) FASTFLASHTIME*60
+
 
 void 		Delay(uint32_t value);
 void 		S800_GPIO_Init(void);
 void		PF0_Flash(uint32_t key_value);
-void		PF1_Flash(uint32_t key_value);
 
 int main(void)
 {
@@ -22,8 +24,6 @@ int main(void)
   {
 		read_key_value = GPIOPinRead(GPIO_PORTJ_BASE,GPIO_PIN_0)	;				//read the PJ0 key value
 		PF0_Flash(read_key_value);
-		read_key_value = GPIOPinRead(GPIO_PORTJ_BASE,GPIO_PIN_1)	;				//read the PJ1 key value
-		PF1_Flash(read_key_value);
    }
 }
 
@@ -31,19 +31,16 @@ void PF0_Flash(uint32_t key_value)
 {
 	uint32_t delay_time;
 		if (key_value	== 0)						//USR_SW1-PJ0 pressed
-			GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, GPIO_PIN_0);			// Turn on the LED.
+			delay_time							= FASTFLASHTIME;
 		else													//USR_SW1-PJ0 released
-			GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 0x0);							// Turn off the LED.
+			delay_time							= SLOWFLASHTIME;
+		
+		GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, GPIO_PIN_0);			// Turn on the LED.
+		Delay(delay_time);
+		GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, 0x0);							// Turn off the LED.
+		Delay(delay_time);
 }
 
-void PF1_Flash(uint32_t key_value)
-{
-	uint32_t delay_time;
-		if (key_value	== 0)						//USR_SW1-PJ1 pressed
-			GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);			// Turn on the LED.
-		else													//USR_SW1-PJ1 released
-			GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x0);							// Turn off the LED.
-}
 void Delay(uint32_t value)
 {
 	uint32_t ui32Loop;
@@ -53,6 +50,20 @@ void Delay(uint32_t value)
 
 void S800_GPIO_Init(void)
 {
+	uint32_t freq;
+	//freq=SysCtlClockFreqSet(SYSCTL_OSC_INT | SYSCTL_USE_OSC,16000000);
+	//freq=SysCtlClockFreqSet(SYSCTL_OSC_INT | SYSCTL_USE_OSC,12000000);
+	//freq=SysCtlClockFreqSet(SYSCTL_OSC_INT | SYSCTL_USE_OSC,8000000);
+	//freq=SysCtlClockFreqSet(SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_OSC,25000000);
+	//freq=SysCtlClockFreqSet(SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_OSC,12000000);
+	//freq=SysCtlClockFreqSet(SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_OSC,1000000);
+	//freq=SysCtlClockFreqSet(SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480,25000000);
+	//freq=SysCtlClockFreqSet(SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480,20000000);
+	//freq=SysCtlClockFreqSet(SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480,8000000);
+	//freq=SysCtlClockFreqSet(SYSCTL_OSC_INT | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480,20000000);
+	//freq=SysCtlClockFreqSet(SYSCTL_OSC_INT | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480,8000000);
+	freq=SysCtlClockFreqSet(SYSCTL_OSC_INT | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480,1000000);
+	
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);						//Enable PortF
 	//函数原型：void SysCtlPeripheralEnable(uint32_t ui32Peripheral)
 	
@@ -63,7 +74,7 @@ void S800_GPIO_Init(void)
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOJ);						//Enable PortJ	
 	while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOJ));			//Wait for the GPIO moduleJ ready	
 	
-  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_1);			//Set PF0 as Output pin
+  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_0);			//Set PF0 as Output pin
 	//函数原型：void GPIOPinTypeGPIOOutput(uint32_t ui32Port, uint8_t ui8Pins)
 	//配置GPIO端口引脚为输出引脚，如果字符型（uint8_t）参数ui8Pins某位为1，则GPIO端口对应位配置为输出引脚
 	
